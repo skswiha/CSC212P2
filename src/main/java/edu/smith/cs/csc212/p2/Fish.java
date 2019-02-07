@@ -18,14 +18,22 @@ public class Fish extends WorldObject {
 	public static Color[] COLORS = {
 			Color.red,
 			Color.green,
-			Color.yellow
-			// TODO: (lab) Add more colors.
-			// TODO: (P2) Maybe make a special fish that is more points?
-	};
+			Color.yellow,
+			Color.blue,
+			Color.orange,
+			Color.pink,
+			Color.magenta
+			};
 	/**
 	 * This is an index into the {@link #COLORS} array.
 	 */
 	int color;
+	
+	//How many points a fish is worth
+	public int points;
+	
+	//Whether the fish is fastScared
+	boolean fastScared;
 	/**
 	 * Whether or not this is the player;
 	 */
@@ -47,6 +55,18 @@ public class Fish extends WorldObject {
 	public Fish(int color, World world) {
 		super(world);
 		this.color = color;
+		this.points = 10 + color;
+		if(rand.nextDouble() < 0.5) {
+			fastScared = true;}
+		else {
+			fastScared = false;
+		}
+		
+	}
+	
+	//return the points value of the fish
+	public int getPoints() {
+		return this.points;
 	}
 	
 	/**

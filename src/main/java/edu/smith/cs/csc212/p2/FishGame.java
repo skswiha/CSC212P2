@@ -43,6 +43,7 @@ public class FishGame {
 	 */
 	int score;
 	
+	public static final int NUM_ROCKS = 10;
 	/**
 	 * Create a FishGame of a particular size.
 	 * @param w how wide is the grid?
@@ -57,13 +58,11 @@ public class FishGame {
 		// Add a home!
 		home = world.insertFishHome();
 		
-		// TODO(lab) Generate some more rocks!
-		// TODO(lab) Make 5 into a constant, so it's easier to find & change.
-		for (int i=0; i<5; i++) {
+		for (int i=0; i<NUM_ROCKS; i++) {
 			world.insertRockRandomly();
 		}
 		
-		// TODO(lab) Make the snail!
+		world.insertSnailRandomly();
 		
 		// Make the player out of the 0th fish color.
 		player = new Fish(0, world);
@@ -115,13 +114,11 @@ public class FishGame {
 			if (missing.contains(wo)) {
 				// Remove this fish from the missing list.
 				missing.remove(wo);
-				
-				// Remove from world.
-				// TODO(lab): add to found instead! (So we see objectsFollow work!)
-				world.remove(wo);
+				// Add fish to found list
+				found.add((Fish) wo);
 				
 				// Increase score when you find a fish!
-				score += 10;
+				score += ((Fish) wo).getPoints();
 			}
 		}
 		
@@ -139,10 +136,12 @@ public class FishGame {
 	private void wanderMissingFish() {
 		Random rand = ThreadLocalRandom.current();
 		for (Fish lost : missing) {
-			// 30% of the time, lost fish move randomly.
-			if (rand.nextDouble() < 0.3) {
-				// TODO(lab): What goes here?
-			}
+			if(rand.nextDouble()< 0.8 && lost.fastScared == true) {
+					lost.moveRandomly();
+				}
+			else if (rand.nextDouble() < 0.3) {
+					lost.moveRandomly();
+					}
 		}
 	}
 
@@ -155,8 +154,7 @@ public class FishGame {
 		// TODO(P2) use this print to debug your World.canSwim changes!
 		System.out.println("Clicked on: "+x+","+y+ " world.canSwim(player,...)="+world.canSwim(player, x, y));
 		List<WorldObject> atPoint = world.find(x, y);
-		// TODO(P2) allow the user to click and remove rocks.
-
+		System.out.println(atPoint);
 	}
 	
 }
