@@ -45,6 +45,7 @@ public class FishGame {
 	 */
 	int score;
 	
+	
 	public static final int NUM_ROCKS = 10;
 	/**
 	 * Create a FishGame of a particular size.
@@ -127,6 +128,9 @@ public class FishGame {
 		// Make sure missing fish *do* something.
 		wanderMissingFish();
 		comeHome();
+		if(stepsTaken > 20) {
+			getLost();
+		}
 		// When fish get added to "found" they will follow the player around.
 		World.objectsFollow(player, found);
 		// Step any world-objects that run themselves.
@@ -147,24 +151,52 @@ public class FishGame {
 					}
 		}
 	}
-		
+	
+	public void getLost() {
+		Random rand = ThreadLocalRandom.current();
+		for (Fish f : found) {
+			if(found.indexOf(f) >= 1) {
+				if(rand.nextDouble() > 0.9) {
+					missing.add(f);
+				}
+			}
+		}
+		for(Fish f : missing) {
+			if(found.contains(f)) {
+				found.remove(f);
+				}
+		}
+	}
 
 	
 	public void comeHome(){
 		if (found.size() > 0) {
 			for(Fish f : found) {
-				System.out.println(f);
 				List<WorldObject> overlap = f.findSameCell();
 				for(int i = 0; i < overlap.size(); i++) {
 					if(overlap.get(i) instanceof FishHome){
 						for(int j = 0; j < overlap.size(); j++) {
 							if(overlap.get(j) instanceof Fish){
 								world.remove(overlap.get(j));
-								if (missing.contains(overlap.get(j))) {
-									// Remove this fish from the missing list.
+							if (found.contains(overlap.get(j))) {
 									atHome.add((Fish)overlap.get(j));
 								}
-								else if (found.contains(overlap.get(j))) {
+								
+							}
+						}
+					}
+				}
+			}
+		}
+		if (missing.size() > 0) {
+			for(Fish f : missing) {
+				List<WorldObject> overlap = f.findSameCell();
+				for(int i = 0; i < overlap.size(); i++) {
+					if(overlap.get(i) instanceof FishHome){
+						for(int j = 0; j < overlap.size(); j++) {
+							if(overlap.get(j) instanceof Fish){
+								world.remove(overlap.get(j));
+							if (missing.contains(overlap.get(j))) {
 									atHome.add((Fish)overlap.get(j));
 								}
 								
@@ -178,6 +210,9 @@ public class FishGame {
 			if(found.contains(f)) {
 				found.remove(f);
 				}
+			if(missing.contains(f)) {
+				missing.remove(f);
+			}
 		}
 	}
 
