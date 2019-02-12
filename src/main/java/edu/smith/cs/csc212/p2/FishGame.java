@@ -33,6 +33,8 @@ public class FishGame {
 	 */
 	List<Fish> found;
 	
+	List<Fish> atHome;
+	
 	/**
 	 * Number of steps!
 	 */
@@ -54,6 +56,7 @@ public class FishGame {
 		
 		missing = new ArrayList<Fish>();
 		found = new ArrayList<Fish>();
+		atHome = new ArrayList<Fish>();
 		
 		// Add a home!
 		home = world.insertFishHome();
@@ -72,7 +75,7 @@ public class FishGame {
 		world.register(player);
 		
 		// Generate fish of all the colors but the first into the "missing" List.
-		for (int ft = 1; ft < Fish.COLORS.length; ft++) {
+		for (int ft = 1; ft < Fish.COLORS.length - 1; ft++) {
 			Fish friend = world.insertFishRandomly(ft);
 			missing.add(friend);
 		}
@@ -92,8 +95,7 @@ public class FishGame {
 	 * @return true if the player has won (or maybe lost?).
 	 */
 	public boolean gameOver() {
-		// TODO(P2) We want to bring the fish home before we win!
-		return missing.isEmpty();
+		return found.isEmpty() && missing.isEmpty();
 	}
 
 	/**
@@ -124,6 +126,7 @@ public class FishGame {
 		
 		// Make sure missing fish *do* something.
 		wanderMissingFish();
+		comeHome();
 		// When fish get added to "found" they will follow the player around.
 		World.objectsFollow(player, found);
 		// Step any world-objects that run themselves.
@@ -144,6 +147,39 @@ public class FishGame {
 					}
 		}
 	}
+		
+
+	
+	public void comeHome(){
+		if (found.size() > 0) {
+			for(Fish f : found) {
+				System.out.println(f);
+				List<WorldObject> overlap = f.findSameCell();
+				for(int i = 0; i < overlap.size(); i++) {
+					if(overlap.get(i) instanceof FishHome){
+						for(int j = 0; j < overlap.size(); j++) {
+							if(overlap.get(j) instanceof Fish){
+								world.remove(overlap.get(j));
+								if (missing.contains(overlap.get(j))) {
+									// Remove this fish from the missing list.
+									atHome.add((Fish)overlap.get(j));
+								}
+								else if (found.contains(overlap.get(j))) {
+									atHome.add((Fish)overlap.get(j));
+								}
+								
+							}
+						}
+					}
+				}
+			}
+		}
+		for(Fish f : atHome) {
+			if(found.contains(f)) {
+				found.remove(f);
+				}
+		}
+	}
 
 	/**
 	 * This gets a click on the grid. We want it to destroy rocks that ruin the game.
@@ -154,7 +190,12 @@ public class FishGame {
 		// TODO(P2) use this print to debug your World.canSwim changes!
 		System.out.println("Clicked on: "+x+","+y+ " world.canSwim(player,...)="+world.canSwim(player, x, y));
 		List<WorldObject> atPoint = world.find(x, y);
-		System.out.println(atPoint);
+		for (WorldObject it : atPoint) {
+			if (it instanceof Rock) {
+			it.remove();	
+			}
+		}
 	}
+
 	
 }

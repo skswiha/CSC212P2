@@ -22,7 +22,8 @@ public class Fish extends WorldObject {
 			Color.blue,
 			Color.orange,
 			Color.pink,
-			Color.magenta
+			Color.magenta,
+			Color.black
 			};
 	/**
 	 * This is an index into the {@link #COLORS} array.
@@ -56,8 +57,11 @@ public class Fish extends WorldObject {
 		super(world);
 		this.color = color;
 		this.points = 10 + color;
-		if(rand.nextDouble() < 0.5) {
-			fastScared = true;}
+		if(rand.nextDouble() < 0.2 && this.color != 0) {
+			fastScared = true;
+			this.color =  7;
+			this.points = 20;
+			}
 		else {
 			fastScared = false;
 		}
