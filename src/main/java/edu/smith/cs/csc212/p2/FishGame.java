@@ -33,6 +33,9 @@ public class FishGame {
 	 */
 	List<Fish> found;
 	
+	/**
+	 * These are fish that are at home
+	 */
 	List<Fish> atHome;
 	
 	/**
@@ -62,10 +65,12 @@ public class FishGame {
 		// Add a home!
 		home = world.insertFishHome();
 		
+		//Insert rocks
 		for (int i=0; i<NUM_ROCKS; i++) {
 			world.insertRockRandomly();
 		}
 		
+		//Insert a snail
 		world.insertSnailRandomly();
 		
 		// Make the player out of the 0th fish color.
@@ -128,6 +133,8 @@ public class FishGame {
 		// Make sure missing fish *do* something.
 		wanderMissingFish();
 		comeHome();
+		
+		//Use getLost() if the player has taken at least 20 steps
 		if(stepsTaken > 20) {
 			getLost();
 		}
@@ -151,7 +158,9 @@ public class FishGame {
 					}
 		}
 	}
-	
+	/**
+	 * Make it so that there is a 10% chance that fish that are not first in line get lost again
+	 */
 	public void getLost() {
 		Random rand = ThreadLocalRandom.current();
 		for (Fish f : found) {
@@ -170,6 +179,7 @@ public class FishGame {
 
 	
 	public void comeHome(){
+		//Check to see if any found fish are home, and add them to atHome if there are
 		if (found.size() > 0) {
 			for(Fish f : found) {
 				List<WorldObject> overlap = f.findSameCell();
@@ -188,6 +198,7 @@ public class FishGame {
 				}
 			}
 		}
+		//Check to see if any missing fish are home, and add them to atHome if there are
 		if (missing.size() > 0) {
 			for(Fish f : missing) {
 				List<WorldObject> overlap = f.findSameCell();
@@ -206,6 +217,7 @@ public class FishGame {
 				}
 			}
 		}
+		//Remove fish that are in atHome from found and missing
 		for(Fish f : atHome) {
 			if(found.contains(f)) {
 				found.remove(f);

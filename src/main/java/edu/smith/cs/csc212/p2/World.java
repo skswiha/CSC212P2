@@ -142,10 +142,16 @@ public class World {
 	
 	/**
 	 * Insert a new Rock into the world at random.
-	 * @return the Rock.
+	 * @return the Rock. There is a 30% chance the Rock will be a FallingRock
 	 */
 	public Rock insertRockRandomly() {
-		Rock r = new Rock(this);
+		Rock r;
+		if(rand.nextDouble() < 0.7) {
+			r = new Rock(this);
+		}
+		else {
+			r = new FallingRock(this);
+		}
 		insertRandomly(r);
 		return r;
 	}

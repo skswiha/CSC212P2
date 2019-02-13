@@ -13,7 +13,7 @@ import java.awt.geom.Ellipse2D;
  */
 public class Fish extends WorldObject {
 	/**
-	 * A fish is only special because of its color now!
+	 * An array of colors that the fish can be
 	 */
 	public static Color[] COLORS = {
 			Color.red,
